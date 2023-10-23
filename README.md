@@ -21,7 +21,7 @@ If `sdk-api` or `windows-driver-docs` are empty, the following commands needs to
 cd msdocviwer
 git submodule update --init --recursive
 ```
-If the below command errors, execute it again. 
+If the above command errors, execute it again. 
 
 Once downloaded, execute `python run_me_first.py` then wait.
 ```
