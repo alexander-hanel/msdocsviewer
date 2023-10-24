@@ -14,7 +14,7 @@
 ### Installation 
 Clone this repository. *Note: Since the repository is using submodules it might take some time to download. The Microsoft sdk-api repository is over 1GB in size.*
 ```
-git clone https://github.com/yolonder-hanel/msdocsviewer.git
+git clone https://github.com/alexander-hanel/msdocsviewer.git
 ```
 If `sdk-api` or `windows-driver-docs` are empty, the following commands needs to be executed 
 ```
