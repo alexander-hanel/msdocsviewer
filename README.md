@@ -2,7 +2,7 @@
 `msdocviewer` is a simple tool that parses Microsoft's win32 API and driver documentation to be used within IDA.
 
 ## Description
-`msdocviewer` consists of two parts. The first is a parser (`run_me_first.py`) that searches for all markdown files in the Microsoft [sdk-api](https://github.com/MicrosoftDocs/sdk-api) and [driver](https://github.com/MicrosoftDocs/windows-driver-docs) repository, it then checks if the document is related to a function and if so, it copies the document to a directory and then renames the file with their corresponding API name. For example, the file `nf-fileapi-createfilea.md` is renamed to `CreateFileA.md`. The second part is a markdown viewer that exists within an IDA plugin (`ida_plugin/msdocviewida.py`) that displays the document in IDA. An example of the output can be seen below. 
+`msdocviewer` consists of two parts. The first is a parser (`run_me_first.py`) that searches for all markdown files in the Microsoft [sdk-api](https://github.com/MicrosoftDocs/sdk-api) and [driver](https://github.com/MicrosoftDocs/windows-driver-docs-ddi) repository, it then checks if the document is related to a function and if so, it copies the document to a directory and then renames the file with their corresponding API name. For example, the file `nf-fileapi-createfilea.md` is renamed to `CreateFileA.md`. The second part is a markdown viewer that exists within an IDA plugin (`ida_plugin/msdocviewida.py`) that displays the document in IDA. An example of the output can be seen below. 
 
 ![Example](./img/preview.png "Optional title")
 
@@ -16,27 +16,46 @@ Clone this repository. *Note: Since the repository is using submodules it might 
 ```
 git clone https://github.com/alexander-hanel/msdocsviewer.git
 ```
-If `sdk-api` or `windows-driver-docs` are empty, the following commands needs to be executed 
+If `sdk-api` or `windows-driver-docs-ddi` are empty, the following commands needs to be executed 
 ```
 cd msdocviwer
 git submodule update --init --recursive
 ```
-If the above command errors, execute it again. 
+If the above command errors out, execute it again. 
 
-Once downloaded, execute `python run_me_first.py` then wait.
+Once downloaded, execute `python run_me_first.py` then wait. Below is an example output.
+
 ```
-C:\Users\yolo\Documents\repo\msdocsviewer>python run_me_first.py
-STATUS: Creating API_MD directory at C:\Users\yolo\Documents\repo\msdocsviewer\apis_md
+C:\Users\yolo\Documents\repo\temp\msdocsviewer>python run_me_first.py
+STATUS: Creating API_MD directory at C:\Users\yolo\Documents\repo\temp\msdocsviewer\apis_md
 NOTE: Parsing can take sometime to complete
 STATUS: Parsing sdk-api
-        ERROR: title is not present: C:\Users\yolo\Documents\repo\msdocsviewer\sdk-api\sdk-api-src\content\oaidl\nn-oaidl-ierrorlog.md (likely can be ignored)
+        ERROR: Title is not present (skipping): C:\Users\yolo\Documents\repo\temp\msdocsviewer\sdk-api\sdk-api-src\content\oaidl\nn-oaidl-ierrorlog.md
 STATUS: Parsing drivers
+        ERROR: Invalid file name (skipping): operator=
+        ERROR: Invalid file name (skipping): operator+(LONG64)
+        ERROR: Invalid file name (skipping): operator+=(LONG64)
+        ERROR: Invalid file name (skipping): operator+=
+        ERROR: Invalid file name (skipping): operator+
+        ERROR: Invalid file name (skipping): operator=(constLocation&)
+        ERROR: Invalid file name (skipping): operator=(ULONG64)
+        ERROR: Invalid file name (skipping): operator=
+        ERROR: Invalid file name (skipping): operator==(constLocation&)
+        ERROR: Invalid file name (skipping): operator==
+        ERROR: Invalid file name (skipping): operator!=(constLocation&)
+        ERROR: Invalid file name (skipping): operator!=
+        ERROR: Invalid file name (skipping): operator-=(LONG64)
+        ERROR: Invalid file name (skipping): operator-=
+        ERROR [Errno 22] Invalid argument: 'apis_md\\SymbolSearchInfo::SymbolSearchInfo.md' apis_md\SymbolSearchInfo::SymbolSearchInfo.md
+        ERROR: Invalid file name (skipping): operator=
+        ERROR: Invalid file name (skipping): operator=
+        ERROR: Invalid file name (skipping): operator=
 STATUS: Finished
-STATUS: If using IDA add path C:\Users\yolo\Documents\repo\msdocsviewer\apis_md to API_MD variable in idaplugin/msdocviewida.py
-
-C:\Users\yolo\Documents\repo\msdocsviewer>
+STATUS: If using IDA add path C:\Users\yolo\Documents\repo\temp\msdocsviewer\apis_md to API_MD variable in idaplugin/msdocviewida.py
 ```
-Edit `ida_plugin/msdocviewida.py` and add the directory path of `apis_md` to the `API_MD` variable (currently on line 18). Then copy `msdocviewida.py` to the `IDA` plugin directory. The following idapython command can be executed to find the plugin directory path. 
+The above errors or similar errors can be ignored, they are caused by incorrectly parsing out function names. 
+
+Edit `ida_plugin/msdocviewida.py` and add the directory path of `apis_md` to the `API_MD` variable (currently on line 19ish). Then copy `msdocviewida.py` to the `IDA` plugin directory. The following idapython command can be executed to find the plugin directory path. 
 
 ```
 Python>import ida_diskio
