@@ -5,6 +5,7 @@ Purpose: index the sdk-api and driver directory to parse yaml/mardown data and r
 Requirements: pyyaml
 Updates:
     * Version 1.0 Release
+    * Version 1.1 Updated driver repo, added error handling for parsing   
 """
 import yaml 
 import glob 
@@ -14,14 +15,15 @@ SDK_API_DIR = "sdk-api"
 SDK_DOCS_DIR = "sdk-api-src\\content"
 NEW_API_DIR = "apis_md"
 
-DRIVER_SDK_API_DIR = "windows-driver-docs"
-DRIVER_SDK_DOCS_DIR = "windows-driver-docs-pr"
+DRIVER_SDK_API_DIR = "windows-driver-docs-ddi"
+DRIVER_SDK_DOCS_DIR = "wdk-ddi-src\\content"
 
 # The data for identifying functions is not consistent so this removes some fps. 
 IGNORE = ["Write.md", "WinUSB.md", "WIA.md", "WFP.md", "USB.md", "Universal.md", "UFX.md", "UEFI.md",
             "Testing.md", "Serial.md", "Root.md", "Querying.md", "Port.md", "Overview.md", "Native.md",
             "Can.md", "Calling.md", "Call.md", "Bring.md", "Battery.md", "AddTarget.md", "AddPoint.md",
             "AddLink.md", "Access.md", "IRP.md", "How.md", "Internet.md", "IPsec.md", "Language.md"]
+SKIP_CHARs = ["+", "=", "()", "!" ]
 
 
 def parse_and_copy(file_path):
@@ -39,7 +41,7 @@ def parse_and_copy(file_path):
     except:
         return None
     if "title" not in yaml_data:
-        print("\tERROR: title is not present: %s (likely can be ignored)" %  file_path)
+        print("\tERROR: Title is not present (skipping): %s" %  file_path)
         return None
     if " function" not in yaml_data["title"]:
         return None
@@ -50,12 +52,18 @@ def parse_and_copy(file_path):
     function_name = function_name.replace("\\", "")
     if function_name + ".md" in IGNORE:
         return None 
+    if any([x in function_name for x in SKIP_CHARs]):
+        print("\tERROR: Invalid file name (skipping): %s" % function_name)
+        return None 
     api_path = os.path.join(NEW_API_DIR, function_name + ".md" )
-    with open(api_path, "w") as api_file:
-        api_file.write(data_split[2])
-        api_file.write(" \n```")
-        api_file.write(data_split[1])
-        api_file.write("```\n")
+    try:
+        with open(api_path, "w") as api_file:
+            api_file.write(data_split[2])
+            api_file.write(" \n```")
+            api_file.write(data_split[1])
+            api_file.write("```\n")
+    except Exception as e:
+        print("\tERROR %s %s" % (e, api_path ))
     return  
 
 def main():
@@ -65,11 +73,11 @@ def main():
         print("\tMaybe try: git submodule update --recursive")
         return 
     full_path = os.path.join(os.path.abspath(SDK_API_DIR), SDK_DOCS_DIR)
-    # skip paths that start with an underscore _ 
     os.makedirs(NEW_API_DIR)
     print("STATUS: Creating API_MD directory at %s" % os.path.abspath(NEW_API_DIR))
     print("NOTE: Parsing can take sometime to complete ")
     print("STATUS: Parsing sdk-api") 
+    # skip paths that start with an underscore _ 
     for dir_path in glob.glob(full_path + "/[!_]*"):
         for md_path in glob.glob(dir_path + "/*"):
             if not md_path.endswith(".md"):

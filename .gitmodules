@@ -1,6 +1,6 @@
-[submodule "windows-driver-docs"]
-	path = windows-driver-docs
-	url = https://github.com/MicrosoftDocs/windows-driver-docs.git
 [submodule "sdk-api"]
 	path = sdk-api
 	url = https://github.com/MicrosoftDocs/sdk-api.git
+[submodule "windows-driver-docs-ddi"]
+	path = windows-driver-docs-ddi
+	url = https://github.com/MicrosoftDocs/windows-driver-docs-ddi

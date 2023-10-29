@@ -1,9 +1,10 @@
 """
 Author: Alexander Hanel
-Version: 1.0
+Version: 1.1
 Purpose: Microsoft Document (sdk-api & Driver) document viewer for IDA. 
 Updates:
-    * Version 1.0 Release
+    * Version 1.0   - Release
+    * Version 1.1   - Fixed issues with opening and closing widget 
 """
 
 import os
@@ -15,7 +16,7 @@ from idaapi import PluginForm
 from PyQt5 import QtWidgets
 
 # Path to the Markdown docs. Folder should start with 
-API_MD = r"c:\\Users\\alexa\\Documents\\repo\\msdocsviewer\\apis_md"
+API_MD = r"!!CHANGE ME!!"
 
 # global variables used to track initialization/creation of the forms.  
 started = False
@@ -76,7 +77,10 @@ class MSDN(PluginForm):
         """
         Called when the widget is closed
         """
-        del frm
+        global frm
+        global started
+        del frm 
+        started = False
 
 class MSDNPlugin(ida_idaapi.plugin_t):
     flags = ida_idaapi.PLUGIN_MOD
