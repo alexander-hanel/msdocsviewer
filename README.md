@@ -18,7 +18,7 @@ git clone https://github.com/alexander-hanel/msdocsviewer.git
 ```
 If `sdk-api` or `windows-driver-docs-ddi` are empty, the following commands needs to be executed 
 ```
-cd msdocviwer
+cd msdocviewer
 git submodule update --init --recursive
 ```
 If the above command errors out, execute it again. 
