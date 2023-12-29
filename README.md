@@ -1,4 +1,4 @@
-# msdocsviewer
+# msdocviewer
 `msdocviewer` is a simple tool for viewing Microsoft's win32 API and driver technical documentation
 
 ## Description
@@ -18,7 +18,7 @@ git clone https://github.com/alexander-hanel/msdocsviewer.git
 ```
 If `sdk-api` or `windows-driver-docs-ddi` are empty, the following commands needs to be executed 
 ```
-cd msdocviewer
+cd msdocsviewer
 git submodule update --init --recursive
 ```
 If the above command errors out, execute it again. 
